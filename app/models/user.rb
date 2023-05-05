@@ -37,6 +37,17 @@ class User < ApplicationRecord
       UserMailer.confirmation(self, confirmation_token).deliver_now
     end
 
+    PASSWORD_RESET_TOKEN_EXPIRATION = 10.minutes
+
+    def generate_password_reset_token
+      signed_id expires_in: PASSWORD_RESET_TOKEN_EXPIRATION, purpose: :reset_password
+    end
+
+    def send_password_reset_email!
+      password_reset_token = generate_password_reset_token
+      UserMailer.password_reset(self, password_reset_token).deliver_now
+    end
+
   end
   
   
